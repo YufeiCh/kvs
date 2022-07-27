@@ -8,7 +8,10 @@ authors = ["Yufei Chen"]
 
 [dependencies]
 clap = "3.2.15"
+failure = "0.1.8" 
 
 [dev-dependencies]
 assert_cmd = "0.11.0"
 predicates = "1.0.0"
+tempfile = "3.0.7"
+walkdir = "2.2.7"

@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use clap::Error;
+
 /// The KvStore stores string key/value pairs
 /// 
 /// Example:
@@ -24,8 +26,9 @@ impl KvStore {
     }
 
     /// set a key/value pair to the KvStore, when key is replicated, the pre-value is overwritten
-    pub fn set(&mut self, key:String, value:String) {
+    pub fn set(&mut self, key:String, value:String) -> Result<(), Error> {
         self.m.insert(key, value);
+        Ok(())
     }
 
     /// remove a key from the KvStore
@@ -36,6 +39,11 @@ impl KvStore {
     /// get a value from the KvStore
     pub fn get(&self, key:String) -> Option<String> {
         self.m.get(&key).cloned()
+    }
+
+    /// new a KvStore with the filePath
+    pub fn open(_:&std::path::Path) -> Result<KvStore, Error> {
+        Ok(KvStore::new())
     }
 }
 
