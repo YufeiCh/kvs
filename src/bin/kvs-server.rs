@@ -2,6 +2,7 @@ use clap::arg_enum;
 use kvs::*;
 use log::LevelFilter;
 use log::{error, info, warn};
+use core::num;
 use std::env::current_dir;
 use std::fs;
 use std::net::SocketAddr;
@@ -67,7 +68,7 @@ fn run(opt: Opt) -> Result<()> {
 
     // write engine to engine file
     fs::write(current_dir()?.join("engine"), format!("{}", engine))?;
-    let pool = NaiveThreadPool::new(1)?;
+    let pool = SharedQueueThreadPool::new(num_cpus::get() as u64)?;
 
     match engine {
         Engine::kvs => run_with_engine(KvStore::open(current_dir()?)?, pool, opt.addr),
