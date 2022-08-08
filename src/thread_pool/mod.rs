@@ -1,4 +1,13 @@
 use crate::Result;
+
+mod naive;
+mod rayon;
+mod shared_queue;
+
+pub use self::naive::NaiveThreadPool;
+pub use self::shared_queue::SharedQueueThreadPool;
+pub use self::rayon::RayonThreadPool;
+
 /// Trait for a thread pool
 pub trait ThreadPool {
     /// create a new thread pool with a given pool size
@@ -12,8 +21,5 @@ pub trait ThreadPool {
     F: FnOnce() + Send + 'static;   
 }
 
-pub use naive::NaiveThreadPool;
-pub use shared_queue::SharedQueueThreadPool;
 
-mod naive;
-mod shared_queue;
+

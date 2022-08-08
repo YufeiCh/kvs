@@ -1,6 +1,6 @@
 use crate::{
     common::{GetResponse, RemoveResponse, Request, SetResponse},
-    KvsEngine, Result, ThreadPool,
+    KvsEngine, Result, thread_pool::ThreadPool,
 };
 use log::{debug, error};
 use serde_json::{value, Deserializer};
