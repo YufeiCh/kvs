@@ -67,15 +67,16 @@ fn run(opt: Opt) -> Result<()> {
 
     // write engine to engine file
     fs::write(current_dir()?.join("engine"), format!("{}", engine))?;
+    let pool = NaiveThreadPool::new(1)?;
 
     match engine {
-        Engine::kvs => run_with_engine(KvStore::open(current_dir()?)?, opt.addr),
-        Engine::sled => run_with_engine(SledKvsEngine::new(sled::open(current_dir()?)?), opt.addr),
+        Engine::kvs => run_with_engine(KvStore::open(current_dir()?)?, pool, opt.addr),
+        Engine::sled => run_with_engine(SledKvsEngine::new(sled::open(current_dir()?)?), pool, opt.addr),
     }
 }
 
-fn run_with_engine<E: KvsEngine>(engine: E, addr: SocketAddr) -> Result<()> {
-    let server = KvsServer::new(engine);
+fn run_with_engine<E: KvsEngine, P: ThreadPool>(engine: E, pool: P, addr: SocketAddr) -> Result<()> {
+    let server = KvsServer::new(engine, pool);
     server.run(addr)
 }
 
