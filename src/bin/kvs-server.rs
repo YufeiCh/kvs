@@ -1,14 +1,14 @@
 use clap::arg_enum;
+use core::num;
+use kvs::thread_pool::*;
 use kvs::*;
 use log::LevelFilter;
 use log::{error, info, warn};
-use core::num;
 use std::env::current_dir;
 use std::fs;
 use std::net::SocketAddr;
 use std::process::exit;
 use structopt::StructOpt;
-use kvs::thread_pool::*;
 
 const DEFAULT_LISTENING_ADDRESS: &str = "127.0.0.1:4000";
 const DEFAULT_ENGINE: Engine = Engine::kvs;
@@ -73,11 +73,19 @@ fn run(opt: Opt) -> Result<()> {
 
     match engine {
         Engine::kvs => run_with_engine(KvStore::open(current_dir()?)?, pool, opt.addr),
-        Engine::sled => run_with_engine(SledKvsEngine::new(sled::open(current_dir()?)?), pool, opt.addr),
+        Engine::sled => run_with_engine(
+            SledKvsEngine::new(sled::open(current_dir()?)?),
+            pool,
+            opt.addr,
+        ),
     }
 }
 
-fn run_with_engine<E: KvsEngine, P: ThreadPool>(engine: E, pool: P, addr: SocketAddr) -> Result<()> {
+fn run_with_engine<E: KvsEngine, P: ThreadPool>(
+    engine: E,
+    pool: P,
+    addr: SocketAddr,
+) -> Result<()> {
     let server = KvsServer::new(engine, pool);
     server.run(addr)
 }

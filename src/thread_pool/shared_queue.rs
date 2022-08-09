@@ -1,15 +1,15 @@
 use std::thread;
 
-use crossbeam::channel::{self, Sender, Receiver};
+use crossbeam::channel::{self, Receiver, Sender};
 
-use crate::Result;
 use super::ThreadPool;
+use crate::Result;
 
 use log::{debug, error};
 
 /// a shared_queue thread pool
 /// when thread panic, it will spawn a new thread
-pub struct  SharedQueueThreadPool {
+pub struct SharedQueueThreadPool {
     tx: Sender<Box<dyn FnOnce() + Send + 'static>>,
 }
 
@@ -20,15 +20,16 @@ impl ThreadPool for SharedQueueThreadPool {
             let rx = TaskReciever(rx.clone());
             thread::Builder::new().spawn(move || run_tasks(rx))?;
         }
-        Ok(SharedQueueThreadPool {tx})
+        Ok(SharedQueueThreadPool { tx })
     }
 
     fn spawn<F>(&self, job: F)
     where
-        F: FnOnce() + Send + 'static {
+        F: FnOnce() + Send + 'static,
+    {
         self.tx
-        .send(Box::new(job))
-        .expect("The thread pool has no thread");
+            .send(Box::new(job))
+            .expect("The thread pool has no thread");
     }
 }
 

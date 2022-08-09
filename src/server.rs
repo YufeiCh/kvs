@@ -1,6 +1,7 @@
 use crate::{
     common::{GetResponse, RemoveResponse, Request, SetResponse},
-    KvsEngine, Result, thread_pool::ThreadPool,
+    thread_pool::ThreadPool,
+    KvsEngine, Result,
 };
 use log::{debug, error};
 use serde_json::{value, Deserializer};
@@ -10,13 +11,13 @@ use std::net::{TcpListener, TcpStream, ToSocketAddrs};
 /// The server of a key value store.
 pub struct KvsServer<E: KvsEngine, P: ThreadPool> {
     engine: E,
-    pool: P
+    pool: P,
 }
 
 impl<E: KvsEngine, P: ThreadPool> KvsServer<E, P> {
     /// Create a `KvsServer` with a given engine.
     pub fn new(engine: E, pool: P) -> Self {
-        KvsServer { engine, pool}
+        KvsServer { engine, pool }
     }
 
     /// Run the server listening on the given address.
